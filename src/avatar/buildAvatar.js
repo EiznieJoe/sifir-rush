@@ -15,7 +15,7 @@ const R = 0.75 // jejari kepala
 let gradientTex
 function gradient() {
   if (!gradientTex) {
-    gradientTex = new THREE.DataTexture(new Uint8Array([110, 190, 255]), 3, 1, THREE.RedFormat)
+    gradientTex = new THREE.DataTexture(new Uint8Array([145, 205, 255]), 3, 1, THREE.RedFormat)
     gradientTex.minFilter = gradientTex.magFilter = THREE.NearestFilter
     gradientTex.needsUpdate = true
   }

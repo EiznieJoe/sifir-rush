@@ -154,6 +154,18 @@ h2 { font-size: 1.6rem; }
 .pod-2 .pod-step { height: 80px; background: #cfd4dc; }
 .pod-3 .pod-step { height: 56px; background: #e0a064; }
 
+/* barisan pemain semasa game */
+.crowd { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 10px; }
+.crowd-item { display: flex; flex-direction: column; align-items: center; max-width: 76px; text-align: center; font-size: 0.78rem; font-weight: 700; word-break: break-word; transition: opacity 0.2s; }
+.crowd-item .avatar-img { border-radius: 50%; background: rgba(255, 255, 255, 0.12); }
+.crowd-item.wait { opacity: 0.4; }
+.crowd-item.done { animation: pop 0.35s; }
+.crowd-item.done .avatar-img { box-shadow: 0 0 0 3px var(--accent); }
+.crowd-item.right .avatar-img { box-shadow: 0 0 0 4px var(--good); }
+.crowd-item.wrong .avatar-img { box-shadow: 0 0 0 4px var(--bad); }
+.crowd-item.none { opacity: 0.35; filter: grayscale(1); }
+@keyframes pop { 0% { transform: scale(0.7); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
 /* avatar */
 .avatar3d { position: relative; }
 .avatar3d canvas { touch-action: none; }

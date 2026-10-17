@@ -13,6 +13,8 @@ const init = {
   board: null,
   me: null,
   last: false,
+  answeredKeys: [],
+  outcomes: {},
 }
 
 function reducer(s, a) {
@@ -27,7 +29,10 @@ function reducer(s, a) {
         case 'joined': return { ...s, status: 'joined' }
         case 'rejected': return { ...s, status: 'rejected', reason: m.reason }
         case 'lobby': return { ...s, phase: 'lobby', players: m.players }
-        case 'question': return { ...s, phase: 'question', q: m, chosen: m.answered, endAt: Date.now() + m.remaining, result: null }
+        case 'roster': return { ...s, players: m.players }
+        case 'progress': return { ...s, answeredKeys: m.answered }
+        case 'reveal': return { ...s, outcomes: m.outcomes }
+        case 'question': return { ...s, phase: 'question', q: m, chosen: m.answered, endAt: Date.now() + m.remaining, result: null, answeredKeys: [], outcomes: {} }
         case 'result': return { ...s, phase: 'result', result: m }
         case 'board': return { ...s, phase: 'board', board: m.top, me: m.me, last: m.last }
         case 'end': return { ...s, phase: 'end', board: m.top, me: m.me }

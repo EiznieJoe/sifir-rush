@@ -26,6 +26,7 @@ export class HostGame {
   qStart = 0
   timer = null
   counts = [0, 0, 0, 0]
+  outcomes = {} // key -> 'c' (betul) | 'w' (salah) | 'n' (tak jawab)
   error = null
 
   // arrow property supaya boleh terus pass ke useSyncExternalStore
@@ -167,15 +168,19 @@ export class HostGame {
   sendState(p) {
     const c = p.conn
     if (!c || !c.open) return
+    // pemain yang reconnect tengah game perlu senarai pemain juga
+    if (this.phase !== 'lobby') c.send({ t: 'roster', players: this.lobbyList() })
     switch (this.phase) {
       case 'question': {
         const q = this.questions[this.qIndex]
         const remaining = Math.max(0, this.settings.seconds * 1000 - (Date.now() - this.qStart))
         c.send({ t: 'question', ...this.qPayload(q), remaining, answered: p.answered ? p.answered.choice : null })
+        c.send({ t: 'progress', answered: this.answeredKeys() })
         break
       }
       case 'reveal':
         if (p.last) c.send({ t: 'result', ...p.last })
+        c.send({ t: 'reveal', outcomes: this.outcomes })
         break
       case 'leaderboard':
         c.send({ t: 'board', top: this.top(5), me: this.me(p), last: this.isLast() })
@@ -220,6 +225,16 @@ export class HostGame {
     return n
   }
 
+  answeredKeys() {
+    const out = []
+    this.players.forEach((p) => p.answered && out.push(p.key))
+    return out
+  }
+
+  broadcastProgress() {
+    if (this.phase === 'question') this.broadcast({ t: 'progress', answered: this.answeredKeys() })
+  }
+
   answeredCount() {
     let n = 0
     this.players.forEach((p) => p.answered && n++)
@@ -258,6 +273,7 @@ export class HostGame {
       p.last = null
     })
     this.counts = [0, 0, 0, 0]
+    this.outcomes = {}
     this.phase = 'question'
     this.qStart = Date.now()
     // jawapan betul TIDAK dihantar kepada pemain
@@ -282,6 +298,7 @@ export class HostGame {
     p.answered = { choice, correct, gain, elapsed }
     this.counts[choice]++
     this.emit()
+    this.broadcastProgress()
     this.checkAllAnswered()
   }
 
@@ -321,6 +338,13 @@ export class HostGame {
       }
       if (p.conn && p.conn.open) p.conn.send({ t: 'result', ...p.last })
     })
+    // semua pemain nampak siapa betul, siapa salah
+    const outcomes = {}
+    this.players.forEach((p) => {
+      outcomes[p.key] = !p.answered ? 'n' : p.answered.correct ? 'c' : 'w'
+    })
+    this.outcomes = outcomes
+    this.broadcast({ t: 'reveal', outcomes })
     this.emit()
   }
 

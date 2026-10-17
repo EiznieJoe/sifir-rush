@@ -1,4 +1,29 @@
 import { useRemaining } from './useRemaining.js'
+import { AvatarImg } from '../avatar/Avatar.jsx'
+
+// Barisan avatar pemain. status[key]: wait | done | right | wrong | none (kosong = biasa)
+export function Crowd({ players, status = {}, size = 48, names = false }) {
+  return (
+    <div className="crowd">
+      {players.map((p) => (
+        <div key={p.key} className={`crowd-item ${status[p.key] || ''}`}>
+          <AvatarImg config={p.avatar} size={size} />
+          {names && <span>{p.name}</span>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Status semasa menjawab: yang dah jawab terang, yang belum malap
+export const waitStatus = (players, answeredKeys) =>
+  Object.fromEntries(players.map((p) => [p.key, answeredKeys.includes(p.key) ? 'done' : 'wait']))
+
+// Selepas reveal: c -> right, w -> wrong, n -> none
+export const outcomeStatus = (outcomes) =>
+  Object.fromEntries(
+    Object.entries(outcomes).map(([k, v]) => [k, v === 'c' ? 'right' : v === 'w' ? 'wrong' : 'none'])
+  )
 
 export const COLORS = ['#e21b3c', '#1368ce', '#d89e00', '#26890c']
 export const SHAPES = ['▲', '◆', '●', '■']

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { HostGame } from '../game/hostGame.js'
 import { AvatarImg, Avatar3D } from '../avatar/Avatar.jsx'
 import { load, save } from '../lib/storage.js'
-import { COLORS, SHAPES, TimerBar, fmtPin } from '../lib/ui.jsx'
+import { COLORS, SHAPES, TimerBar, fmtPin, Crowd, waitStatus, outcomeStatus } from '../lib/ui.jsx'
 
 const DEFAULTS = { tables: [2, 3, 4, 5, 6, 7, 8, 9], count: 10, seconds: 15 }
 const TABLES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -152,6 +152,7 @@ function HostLive({ game, onExit }) {
   }
 
   const q = game.questions[game.qIndex]
+  const roster = [...game.players.values()]
 
   if (phase === 'question') {
     return (
@@ -170,6 +171,7 @@ function HostLive({ game, onExit }) {
             </div>
           ))}
         </div>
+        <Crowd players={roster} status={waitStatus(roster, game.answeredKeys())} size={60} names />
         <button className="btn secondary" onClick={() => game.skip()}>Langkau masa</button>
       </div>
     )
@@ -194,6 +196,7 @@ function HostLive({ game, onExit }) {
             )
           })}
         </div>
+        <Crowd players={roster} status={outcomeStatus(game.outcomes)} size={60} names />
         <button className="btn big" onClick={() => game.showBoard()}>Papar markah</button>
       </div>
     )

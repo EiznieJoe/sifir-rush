@@ -4,7 +4,7 @@ import { Avatar3D, AvatarImg } from '../avatar/Avatar.jsx'
 import AvatarCreator from '../avatar/AvatarCreator.jsx'
 import { defaultAvatar, randomAvatar, sanitizeAvatar } from '../avatar/config.js'
 import { load, save, playerKey } from '../lib/storage.js'
-import { COLORS, SHAPES, TimerBar, fmtPin } from '../lib/ui.jsx'
+import { COLORS, SHAPES, TimerBar, fmtPin, Crowd, waitStatus, outcomeStatus } from '../lib/ui.jsx'
 
 export default function PlayerScreen({ initialPin, onExit }) {
   const [pin, setPin] = useState(initialPin || '')
@@ -107,7 +107,7 @@ function Msg({ title, sub, action, actionText }) {
 }
 
 function PlayerPhase({ state, answer, avatar, profile, onExit }) {
-  const { phase, q, chosen, endAt, result, board, me, last, players } = state
+  const { phase, q, chosen, endAt, result, board, me, last, players, answeredKeys, outcomes } = state
 
   if (phase === 'lobby') {
     return (
@@ -116,6 +116,7 @@ function PlayerPhase({ state, answer, avatar, profile, onExit }) {
         <h2>{profile.name}</h2>
         <p className="muted">Kau dah masuk. Tunggu cikgu mulakan game.</p>
         <p className="muted">{players.length} pemain dalam bilik</p>
+        <Crowd players={players} size={56} names />
       </div>
     )
   }
@@ -144,6 +145,7 @@ function PlayerPhase({ state, answer, avatar, profile, onExit }) {
             </button>
           ))}
         </div>
+        <Crowd players={players} status={waitStatus(players, answeredKeys)} size={40} />
       </div>
     )
   }
@@ -161,6 +163,7 @@ function PlayerPhase({ state, answer, avatar, profile, onExit }) {
         )}
         {result.streak >= 2 && <p>{result.streak} betul berturut-turut</p>}
         <p className="muted">Markah {result.score}, tempat {result.rank}/{result.total}</p>
+        <Crowd players={players} status={outcomeStatus(outcomes)} size={40} />
       </div>
     )
   }

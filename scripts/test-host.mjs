@@ -62,6 +62,9 @@ assert.equal(g.phase, 'question', 'belum semua jawab')
 g.answer(g.players.get('k2'), { idx: 0, choice: wrong })
 assert.equal(g.phase, 'reveal', 'semua dah jawab -> reveal automatik')
 
+const rev = last(c1, 'reveal')
+assert.deepEqual(rev.outcomes, { k1: 'c', k2: 'w' }, 'semua pemain nampak outcome')
+assert.deepEqual(last(c2, 'progress').answered.sort(), ['k1', 'k2'])
 const r1 = last(c1, 'result'), r2 = last(c2, 'result')
 assert.equal(r1.correct, true)
 assert.ok(r1.gain >= 500 && r1.gain <= 1000)
@@ -82,6 +85,7 @@ const c2b = fakeConn()
 g.join(c2b, { key: 'k2', name: 'Bob' })
 assert.equal(g.players.get('k2').connected, true)
 assert.equal(last(c2b, 'board').me.rank, 2, 'reconnect dapat state semasa')
+assert.equal(last(c2b, 'roster').players.length, 2, 'reconnect dapat senarai pemain')
 
 // pemain baru tak boleh masuk selepas game mula
 const c4 = fakeConn()

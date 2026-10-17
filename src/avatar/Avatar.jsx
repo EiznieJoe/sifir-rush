@@ -40,7 +40,8 @@ function AvatarModel({ config, mood = 'idle', sway = false }) {
 export function Avatar3D({ config, mood, sway, className = '', style }) {
   return (
     <div className={`avatar3d ${className}`} style={style}>
-      <Canvas flat dpr={[1, 2]} camera={{ position: [0, 1.1, 5.6], fov: 30 }}>
+      {/* rotation diberi sengaja: tanpa itu R3F auto lookAt(0,0,0) dan kepala terpotong di atas */}
+      <Canvas flat dpr={[1, 2]} camera={{ position: [0, 1.1, 5.6], rotation: [0, 0, 0], fov: 30 }}>
         <ambientLight intensity={1.1} />
         <directionalLight position={[3, 5, 4]} intensity={2.2} />
         <AvatarModel config={config} mood={mood} sway={sway} />
