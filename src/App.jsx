@@ -20,6 +20,7 @@ export default function App() {
         <button className="btn big secondary" onClick={() => setScreen('host')}>Jadi host (cikgu)</button>
       </div>
       <p className="fine">Tiada akaun, tiada database. Semua murid dan host kena online.</p>
+      <p className="fine">versi {__BUILD__}</p>
     </div>
   )
 }

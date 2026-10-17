@@ -1,6 +1,7 @@
 import Peer from 'peerjs'
 import { makeQuestions } from './questions.js'
 import { sanitizeAvatar } from '../avatar/config.js'
+import { peerOptions } from './peerOptions.js'
 
 export const PEER_PREFIX = 'sifir-'
 const SNAP_KEY = 'sifir.hostSnapshot'
@@ -81,7 +82,7 @@ export class HostGame {
 
   tryOpen(pin) {
     return new Promise((resolve, reject) => {
-      const peer = new Peer(PEER_PREFIX + pin)
+      const peer = new Peer(PEER_PREFIX + pin, peerOptions())
       const fail = (e) => {
         try { peer.destroy() } catch { /* abaikan */ }
         reject(e)

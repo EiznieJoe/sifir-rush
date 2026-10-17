@@ -1,5 +1,6 @@
 import Peer from 'peerjs'
 import { PEER_PREFIX } from './hostGame.js'
+import { peerOptions } from './peerOptions.js'
 
 /**
  * Sambungan pemain ke host. Auto-reconnect: kalau talian putus (atau host refresh),
@@ -19,7 +20,7 @@ export class PlayerClient {
   connect(pin, profile) {
     this.pin = pin
     this.profile = profile
-    this.peer = new Peer()
+    this.peer = new Peer(undefined, peerOptions())
     this.peer.on('open', () => this.dial())
     this.peer.on('disconnected', () => {
       try { this.peer.reconnect() } catch { /* abaikan */ }

@@ -257,7 +257,7 @@ export function avatarDataURL(cfg, size = 160) {
     const av = buildAvatar(clean)
     scene.add(av)
     const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50)
-    cam.position.set(0, 1.1, 5.6)
+    cam.position.set(0, 1.35, 6.0) // lebih dekat dari kamera live supaya avatar penuh dalam bulatan kecil; pandang lurus ke -z
     snapRenderer.render(scene, cam)
     const url = snapRenderer.domElement.toDataURL('image/png')
     disposeAvatar(av)
